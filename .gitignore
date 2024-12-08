@@ -1,0 +1,49 @@
+# Xcode
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/project.xcworkspace/xcuserdata
+*.xcodeproj/xcuserdata
+*.xcodeproj/xcshareddata
+*.xcodeproj/xcuserdata/*.xcuserdatad
+*.xcodeproj/xcuserdata/*.xcuserdatad/xcschemes
+*.xcodeproj/xcuserdata/*.xcuserdatad/xcschemes/*.xcscheme
+*.xcodeproj/xcuserdata/*.xcuserdatad/xcschemes/*.xcscheme
+*.xcodeproj/xcuserdata/*.xcuserdatad/xcschemes/xcschememanagement.plist
+
+# Build products
+build/
+DerivedData/
+*.app
+*.ipa
+
+# Swift Package Manager
+/.build/
+Package.resolved
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Other
+*.DS_Store
+*.swp
+*.lock
+*.log
+*.tmp
+*.tmp.*
+*.orig
+*.user
+*.userprefs
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*.sublime-settings
+*.sublime-project
+*.sublime-workspace
+*.xcodeproj/*.xcworkspace/xcuserdata
+*.xcodeproj/*.xcworkspace/xcuserdata/*.xcuserdatad
+*.xcodeproj/*.xcworkspace/xcuserdata/*.xcuserdatad

@@ -9,11 +9,9 @@ struct WebView: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> WKWebView {
-        // Create a WKWebViewConfiguration with the userContentController
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
 
-        // Configure viewport width
         let script = """
             var meta = document.createElement('meta');
             meta.name = 'viewport';
@@ -28,7 +26,6 @@ struct WebView: UIViewRepresentable {
         userContentController.addUserScript(userScript)
         configuration.userContentController = userContentController
 
-        // Create new webview with configuration
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
             "AppleWebKit/605.1.15 (KHTML, like Gecko) " +
@@ -37,17 +34,17 @@ struct WebView: UIViewRepresentable {
 
         webViewStore.webView = webView
 
-        // Load the initial URL
-        if let url = webViewStore.url {
-            let request = URLRequest(url: url)
-            webView.load(request)
+        // Load initial URL if available
+        if let urlString = webViewStore.urlString.nilIfEmpty,
+           let url = URL(string: urlString) {
+            webView.load(URLRequest(url: url))
         }
 
         return webView
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        // Do not reload the web view to avoid interfering with navigation
+        // URL loading is handled in ContentView's loadURL() function
     }
 
     class Coordinator: NSObject, WKNavigationDelegate {
@@ -60,9 +57,15 @@ struct WebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             webViewStore.canGoBack = webView.canGoBack
             webViewStore.canGoForward = webView.canGoForward
-
-            // Update the urlString in webViewStore
+            webViewStore.pageTitle = webView.title ?? ""
             webViewStore.urlString = webView.url?.absoluteString ?? ""
         }
+    }
+}
+
+// Helper extension
+extension String {
+    var nilIfEmpty: String? {
+        self.isEmpty ? nil : self
     }
 }

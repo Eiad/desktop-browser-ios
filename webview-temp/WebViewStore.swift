@@ -10,12 +10,12 @@ import WebKit
 import Combine
 
 class WebViewStore: ObservableObject {
-    weak var webView: WKWebView?
-
+    @Published var webView: WKWebView?
+    @Published var urlString: String = ""
+    @Published var pageTitle: String = ""
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
-    @Published var urlString: String = "https://www.example.com"
-
+    
     var url: URL? {
         URL(string: urlString)
     }
@@ -27,7 +27,7 @@ class WebViewStore: ObservableObject {
     func goForward() {
         webView?.goForward()
     }
-
+    
     func loadUrl(_ urlString: String) {
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)

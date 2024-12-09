@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E71EF072D077FF9002E42F6 /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E71EF062D077FF9002E42F6 /* BookmarksView.swift */; };
+		5E71EF092D078057002E42F6 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E71EF082D078057002E42F6 /* Bookmark.swift */; };
 		5EE1EB8C2D05C67700DEB986 /* webview_tempApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE1EB8B2D05C67700DEB986 /* webview_tempApp.swift */; };
 		5EE1EB8E2D05C67700DEB986 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE1EB8D2D05C67700DEB986 /* ContentView.swift */; };
 		5EE1EB902D05C67700DEB986 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE1EB8F2D05C67700DEB986 /* Item.swift */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5E71EF062D077FF9002E42F6 /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
+		5E71EF082D078057002E42F6 /* Bookmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookmark.swift; sourceTree = "<group>"; };
 		5EE1EB882D05C67700DEB986 /* webview-temp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "webview-temp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EE1EB8B2D05C67700DEB986 /* webview_tempApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = webview_tempApp.swift; sourceTree = "<group>"; };
 		5EE1EB8D2D05C67700DEB986 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -64,6 +68,8 @@
 				5EE1EB932D05C67800DEB986 /* Preview Content */,
 				5EE1EB9D2D05C75C00DEB986 /* WebView.swift */,
 				5EE1EBA12D05CED800DEB986 /* WebViewStore.swift */,
+				5E71EF062D077FF9002E42F6 /* BookmarksView.swift */,
+				5E71EF082D078057002E42F6 /* Bookmark.swift */,
 			);
 			path = "webview-temp";
 			sourceTree = "<group>";
@@ -150,6 +156,8 @@
 				5EE1EB9E2D05C75C00DEB986 /* WebView.swift in Sources */,
 				5EE1EBA22D05CED800DEB986 /* WebViewStore.swift in Sources */,
 				5EE1EB902D05C67700DEB986 /* Item.swift in Sources */,
+				5E71EF072D077FF9002E42F6 /* BookmarksView.swift in Sources */,
+				5E71EF092D078057002E42F6 /* Bookmark.swift in Sources */,
 				5EE1EB8C2D05C67700DEB986 /* webview_tempApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

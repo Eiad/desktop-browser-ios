@@ -11,11 +11,19 @@ import WebKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
     @StateObject private var webViewStore = WebViewStore()
-    
+    @State private var isShowingBookmarks = false
+
     private func formatURL(_ input: String) -> String {
+        // Trim whitespace and convert to lowercase
         var formattedURL = input.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        
+        // Check if it's a search query
+        if formattedURL.contains(" ") || !formattedURL.contains(".") {
+            // Replace spaces with plus signs for search
+            let searchQuery = formattedURL.replacingOccurrences(of: " ", with: "+")
+            return "https://www.google.com/search?q=\(searchQuery)"
+        }
         
         // If it's already a valid URL with scheme, return as is
         if formattedURL.hasPrefix("http://") || formattedURL.hasPrefix("https://") {
@@ -25,6 +33,14 @@ struct ContentView: View {
         // Remove any "www." prefix if present
         if formattedURL.hasPrefix("www.") {
             formattedURL = String(formattedURL.dropFirst(4))
+        }
+        
+        // Handle common TLDs without dots (like "amazon" -> "amazon.com")
+        let commonSites = ["google", "facebook", "twitter", "amazon", "youtube", "instagram"]
+        if !formattedURL.contains(".") {
+            if commonSites.contains(formattedURL) {
+                formattedURL += ".com"
+            }
         }
         
         // Add https:// prefix
@@ -40,7 +56,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 // Logo Section
                 VStack(spacing: 8) {
@@ -53,26 +69,28 @@ struct ContentView: View {
                                 endPoint: .trailing
                             )
                         )
-                        .padding(.top, 16)                
+                        .padding(.top, 16)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, 20)
-                
+
                 // URL Bar
                 HStack(spacing: 12) {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
                             .font(.system(size: 16))
-                        
+
                         TextField("Search or enter URL", text: $webViewStore.urlString)
-                            .textFieldStyle(PlainTextFieldStyle())
                             .font(.system(size: 16))
                             .submitLabel(.go)
                             .onSubmit {
                                 loadURL()
                             }
-                        
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+                            .keyboardType(.URL)
+
                         if !webViewStore.urlString.isEmpty {
                             Button(action: { webViewStore.urlString = "" }) {
                                 Image(systemName: "xmark.circle.fill")
@@ -91,7 +109,7 @@ struct ContentView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
-                
+
                 // Navigation Bar
                 HStack(spacing: 32) {
                     Button(action: { webViewStore.goBack() }) {
@@ -100,16 +118,16 @@ struct ContentView: View {
                             .foregroundColor(webViewStore.canGoBack ? Color("AccentColor") : .gray)
                     }
                     .disabled(!webViewStore.canGoBack)
-                    
+
                     Button(action: { webViewStore.goForward() }) {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 18, weight: .medium))
                             .foregroundColor(webViewStore.canGoForward ? Color("AccentColor") : .gray)
                     }
                     .disabled(!webViewStore.canGoForward)
-                    
+
                     Spacer()
-                    
+
                     Button(action: { webViewStore.webView?.reload() }) {
                         Image(systemName: "arrow.clockwise")
                             .font(.system(size: 18, weight: .medium))
@@ -118,14 +136,41 @@ struct ContentView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 12)
-                
+
                 // Web Content
                 WebView()
                     .environmentObject(webViewStore)
             }
             .background(Color(.systemBackground))
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        addBookmark()
+                    }) {
+                        Image(systemName: "bookmark.fill")
+                    }
+                    Button(action: {
+                        isShowingBookmarks = true
+                    }) {
+                        Image(systemName: "book")
+                    }
+                }
+            }
+            .sheet(isPresented: $isShowingBookmarks) {
+                BookmarksView(selectedURL: $webViewStore.urlString)
+            }
         }
-        .navigationBarHidden(true)
+    }
+
+    private func addBookmark() {
+        guard !webViewStore.urlString.isEmpty else { return }
+        let title = webViewStore.pageTitle.isEmpty ? webViewStore.urlString : webViewStore.pageTitle
+        let bookmark = Bookmark(title: title, url: webViewStore.urlString)
+        modelContext.insert(bookmark)
+        
+        // Show feedback
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
     }
 }
 

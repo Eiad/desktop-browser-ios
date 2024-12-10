@@ -1,8 +1,10 @@
 import SwiftUI
 import WebKit
+import SwiftData
 
 struct WebView: UIViewRepresentable {
     @EnvironmentObject var webViewStore: WebViewStore
+    @Query private var settings: [Settings]
 
     func makeCoordinator() -> Coordinator {
         Coordinator(webViewStore: webViewStore)
@@ -12,12 +14,14 @@ struct WebView: UIViewRepresentable {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
 
+        let resolution = settings.first?.screenResolution ?? 1200
         let script = """
             var meta = document.createElement('meta');
             meta.name = 'viewport';
-            meta.content = 'width=1200';
+            meta.content = 'width=\(resolution)';
             document.getElementsByTagName('head')[0].appendChild(meta);
         """
+
         let userScript = WKUserScript(
             source: script,
             injectionTime: .atDocumentEnd,

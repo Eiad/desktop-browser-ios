@@ -19,6 +19,21 @@ class WebViewStore: ObservableObject {
     var url: URL? {
         URL(string: urlString)
     }
+    
+    func updateResolution(_ resolution: Int) {
+        let script = """
+            var meta = document.querySelector('meta[name="viewport"]');
+            if (meta) {
+                meta.content = 'width=\(resolution)';
+            } else {
+                var meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=\(resolution)';
+                document.getElementsByTagName('head')[0].appendChild(meta);
+            }
+        """
+        webView?.evaluateJavaScript(script)
+    }
 
     func goBack() {
         webView?.goBack()

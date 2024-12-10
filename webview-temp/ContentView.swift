@@ -13,6 +13,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var webViewStore = WebViewStore()
     @State private var isShowingBookmarks = false
+    @State private var isShowingSettings = false
 
     private func formatURL(_ input: String) -> String {
         // Trim whitespace and convert to lowercase
@@ -114,8 +115,8 @@ struct ContentView: View {
                                 .foregroundColor(Color("AccentColor"))
                         }
                         
-                        Button(action: { isShowingBookmarks = true }) {
-                            Image(systemName: "book")
+                        Button(action: { isShowingSettings = true }) {
+                            Image(systemName: "gear")
                                 .foregroundColor(Color("AccentColor"))
                         }
                     }
@@ -132,6 +133,10 @@ struct ContentView: View {
             }
             .sheet(isPresented: $isShowingBookmarks) {
                 BookmarksView(selectedURL: $webViewStore.urlString)
+            }
+            .sheet(isPresented: $isShowingSettings) {
+                SettingsView()
+                    .environmentObject(webViewStore)
             }
         }
     }

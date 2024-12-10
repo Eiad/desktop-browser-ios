@@ -89,7 +89,7 @@ struct ContentView: View {
                             .onSubmit { loadURL() }
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
-                            .keyboardType(.URL)
+                            .keyboardType(.webSearch)
                         
                         if !webViewStore.urlString.isEmpty {
                             Button(action: { webViewStore.urlString = "" }) {

@@ -58,103 +58,77 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Logo Section
-                VStack(spacing: 8) {
-                    Text("VibeBrowse")
-                        .font(.system(size: 25, weight: .bold, design: .rounded))
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [Color("AccentColor"), Color("AccentColor").opacity(0.7)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .padding(.top, 16)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 20)
-
-                // URL Bar
+                // Combined Header with Search Bar
                 HStack(spacing: 12) {
+                    // Back/Forward Navigation
+                    HStack(spacing: 16) {
+                        Button(action: { webViewStore.goBack() }) {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(webViewStore.canGoBack ? Color("AccentColor") : .gray)
+                        }
+                        .disabled(!webViewStore.canGoBack)
+                        
+                        Button(action: { webViewStore.goForward() }) {
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(webViewStore.canGoForward ? Color("AccentColor") : .gray)
+                        }
+                        .disabled(!webViewStore.canGoForward)
+                    }
+                    .font(.system(size: 16, weight: .medium))
+                    
+                    // Search Bar
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
-                            .font(.system(size: 16))
-
+                            .font(.system(size: 14))
+                        
                         TextField("Search or enter URL", text: $webViewStore.urlString)
-                            .font(.system(size: 16))
+                            .font(.system(size: 14))
                             .submitLabel(.go)
-                            .onSubmit {
-                                loadURL()
-                            }
+                            .onSubmit { loadURL() }
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
                             .keyboardType(.URL)
-
+                        
                         if !webViewStore.urlString.isEmpty {
                             Button(action: { webViewStore.urlString = "" }) {
                                 Image(systemName: "xmark.circle.fill")
                                     .foregroundColor(.gray)
-                                    .font(.system(size: 16))
+                                    .font(.system(size: 14))
                             }
                         }
                     }
-                    .padding(12)
+                    .padding(8)
                     .background(Color(.systemGray6))
-                    .cornerRadius(12)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                    )
+                    .cornerRadius(8)
+                    
+                    // Right Actions
+                    HStack(spacing: 16) {
+                        Button(action: { webViewStore.webView?.reload() }) {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(Color("AccentColor"))
+                        }
+                        
+                        Button(action: { addBookmark() }) {
+                            Image(systemName: "bookmark")
+                                .foregroundColor(Color("AccentColor"))
+                        }
+                        
+                        Button(action: { isShowingBookmarks = true }) {
+                            Image(systemName: "book")
+                                .foregroundColor(Color("AccentColor"))
+                        }
+                    }
+                    .font(.system(size: 16))
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 16)
-
-                // Navigation Bar
-                HStack(spacing: 32) {
-                    Button(action: { webViewStore.goBack() }) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(webViewStore.canGoBack ? Color("AccentColor") : .gray)
-                    }
-                    .disabled(!webViewStore.canGoBack)
-
-                    Button(action: { webViewStore.goForward() }) {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(webViewStore.canGoForward ? Color("AccentColor") : .gray)
-                    }
-                    .disabled(!webViewStore.canGoForward)
-
-                    Spacer()
-
-                    Button(action: { webViewStore.webView?.reload() }) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(Color("AccentColor"))
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 12)
-
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(.systemBackground))
+                .shadow(color: Color.black.opacity(0.1), radius: 2, y: 1)
+                
                 // Web Content
                 WebView()
                     .environmentObject(webViewStore)
-            }
-            .background(Color(.systemBackground))
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        addBookmark()
-                    }) {
-                        Image(systemName: "bookmark.fill")
-                    }
-                    Button(action: {
-                        isShowingBookmarks = true
-                    }) {
-                        Image(systemName: "book")
-                    }
-                }
             }
             .sheet(isPresented: $isShowingBookmarks) {
                 BookmarksView(selectedURL: $webViewStore.urlString)
